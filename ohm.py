@@ -3,13 +3,31 @@
 from math import sqrt, pow
 
 class Circuit(object):
-	"""Circuit object class"""
+	"""Circuit object class.
+	>>> simple_circuit = Circuit(10, 2)
+
+	>>> simple_circuit.resistance
+	2
+
+	>>> simple_circuit.current
+	10
+
+	>>> simple_circuit.voltage
+	20
+
+	>>> simple_circuit.power
+	200.0
+
+	"""
 	def __init__(self, current, resistance):
 		self.resistance = resistance
 		self.current = current
 		self.voltage = calc_voltage(r=resistance, i=current)
 		self.power = calc_power(r=resistance, i=current)
 
+	# I need a repr function.
+
+# calculation functions!
 
 def calc_voltage(i=None, r=None, p=None):
 	if i != None:
@@ -51,3 +69,11 @@ def calc_power(e=None, r=None, i=None):
 	else:
 		power = e * i
 	return power
+
+
+simple_circuit = Circuit(10, 2)
+
+print "resistance:", simple_circuit.resistance
+print "current:", simple_circuit.current
+print "power:", simple_circuit.power
+print "voltage:", simple_circuit.voltage
