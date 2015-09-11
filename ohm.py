@@ -25,7 +25,10 @@ class Circuit(object):
 		self.voltage = calc_voltage(r=resistance, i=current)
 		self.power = calc_power(r=resistance, i=current)
 
-	# I need a repr function.
+	def __repr__(self):
+        """Provide helpful information when printed!"""
+        return "<Circuit object. resistance = %s current = %s>" %(self.resistance, self.current)
+
 
 # calculation functions!
 
