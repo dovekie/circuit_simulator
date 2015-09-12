@@ -74,6 +74,15 @@ class CirkuUnitTestCase(unittest.TestCase):
 		correct_result = 15
 		assert(ohm.calc_power(e=e, i=i) == correct_result)
 
+	def test_series_resistance(self):
+		resistors = [3, 2, 5, 10]
+		correct_result = 20
+		assert(ohm.calc_series_resistance(resistors) == correct_result)
+
+	def test_parallel_resistance(self):
+		resistors = [2, 10, 1, 5]
+		correct_result = (1/1.8) # aka .5 repeating. FIXME to cut off decimals in a controlled way!
+		assert(ohm.calc_parallel_resistance(resistors) == correct_result)
 
 if __name__ == "__main__":
     unittest.main()

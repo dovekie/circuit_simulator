@@ -26,8 +26,8 @@ class Circuit(object):
 		self.power = calc_power(r=resistance, i=current)
 
 	def __repr__(self):
-        """Provide helpful information when printed!"""
-        return "<Circuit object. resistance = %s current = %s>" %(self.resistance, self.current)
+		"""Provide helpful information when printed!"""
+		return "<Circuit object. resistance = %s current = %s>" %(self.resistance, self.current)
 
 
 # calculation functions!
@@ -72,6 +72,20 @@ def calc_power(e=None, r=None, i=None):
 	else:
 		power = e * i
 	return power
+
+def calc_series_resistance(resistors = []):
+	total_resistance = sum(resistors)
+
+	return total_resistance
+
+def calc_parallel_resistance(resistors = []):
+	total_resistance = 0
+	for resistor in resistors:
+		total_resistance = total_resistance + 1/float(resistor)
+
+	total_resistance = 1/total_resistance #FIXME to cut off decimals in a controlled way!
+
+	return total_resistance
 
 
 simple_circuit = Circuit(10, 2)
