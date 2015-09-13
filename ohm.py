@@ -1,6 +1,7 @@
 # Ohm's law
 
 from math import sqrt, pow
+from random import randint
 
 class Circuit(object):
 	"""Circuit object class.
@@ -24,6 +25,12 @@ class Circuit(object):
 		self.current = current
 		self.voltage = calc_voltage(r=resistance, i=current)
 		self.power = calc_power(r=resistance, i=current)
+
+		self.number_of_resistors = randint(1, 6)
+
+		if self.number_of_resistors == 1:
+			pass
+
 
 	def __repr__(self):
 		"""Provide helpful information when printed!"""
@@ -94,3 +101,4 @@ print "resistance:", simple_circuit.resistance
 print "current:", simple_circuit.current
 print "power:", simple_circuit.power
 print "voltage:", simple_circuit.voltage
+print "number of resistors:", simple_circuit.number_of_resistors
