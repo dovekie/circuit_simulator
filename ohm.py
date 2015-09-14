@@ -3,6 +3,28 @@
 from math import sqrt, pow
 from random import randint
 
+class Resistor(object):
+	"""Resistor object class"""
+
+	def __init__(self, ident, resistance):
+		self.ident = ident
+		self.resistance = resistance
+		self.series_relations = set()
+		self.parallel_relations = set()
+
+	def add_series_relation(self, r):
+		""" pass in a Resistor object r"""
+
+		if r.ident not in self.parallel_relations:
+			self.series_relations.add(r.ident)
+
+	def add_parallel_relation(self, r):
+		"""pass in a Resistor object r"""
+
+		if r.ident not in self.series_relations:
+			self.parallel_relations.add(r.ident)
+
+
 class Circuit(object):
 	"""Circuit object class.
 
@@ -21,11 +43,12 @@ class Circuit(object):
 	"""
 	def __init__(self, current):
 		self.current = current
+		self.number_of_resistors = randint(1, 6)
 		self.resistors = {}
 
 	def add_resistors(self):
-		for resistor in range(randint(1, 6)):
-			self.resistors[resistor] = randint(1, 10)
+		for resistor_ident in number_of_resistors:
+			self.resistors[resistor_ident] = Resistor(resistor_ident, randint(1, 10))
 
 	def __repr__(self):
 		"""Provide helpful information when printed!"""
