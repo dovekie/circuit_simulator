@@ -1,7 +1,7 @@
 # Ohm's law
 
 from math import sqrt, pow
-from random import randint
+from random import randint, sample
 
 class Resistor(object):
 	"""Resistor object class"""
@@ -12,17 +12,21 @@ class Resistor(object):
 		self.series_relations = set()
 		self.parallel_relations = set()
 
-	def add_series_relation(self, r):
+	def add_series_relation(self, r_list):
 		""" pass in a Resistor object r"""
 
-		if r.ident not in self.parallel_relations:
-			self.series_relations.add(r.ident)
+		for r in r_list:
+			if r.ident not in self.parallel_relations:
+				self.series_relations.add(r.ident)
+				r.series_relations.add(self.ident)
 
-	def add_parallel_relation(self, r):
+	def add_parallel_relation(self, r_list):
 		"""pass in a Resistor object r"""
 
-		if r.ident not in self.series_relations:
-			self.parallel_relations.add(r.ident)
+		for r in r_list:
+			if r.ident not in self.series_relations:
+				self.parallel_relations.add(r.ident)
+				r.parallel_relations.add(self.ident)
 
 
 class Circuit(object):
@@ -43,12 +47,27 @@ class Circuit(object):
 	"""
 	def __init__(self, current):
 		self.current = current
-		self.number_of_resistors = randint(1, 6)
+		self.number_of_resistors = 0
 		self.resistors = {}
 
-	def add_resistors(self):
-		for resistor_ident in number_of_resistors:
+	def add_resistors(self, num = None):
+		if num == None:
+			self.number_of_resistors = randint(1, 6)
+		else:
+			self.number_of_resistors = num 
+
+		for resistor_ident in range(self.number_of_resistors):
 			self.resistors[resistor_ident] = Resistor(resistor_ident, randint(1, 10))
+
+	def add_series_group(self, r_ids):
+		for resistor_target in r_ids:
+			for resistor_being_added in r_ids:
+				self.resistors[resistor].add_series_relation(self.resistors[resistor_being_added])
+
+	def add_parallel_group(self, r_ids):
+		for resistor_target in r_ids:
+			for resistor_being_added in r_ids:
+				self.resistors[resistor].add_parallel_relation(self.resistors[resistor_being_added])
 
 	def __repr__(self):
 		"""Provide helpful information when printed!"""
