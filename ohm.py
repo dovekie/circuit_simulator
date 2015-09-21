@@ -5,9 +5,21 @@ from random import randint, sample
 
 class Resistor_group(object):
 	"""Group of resistors object"""
-	def __init__(self, ident, resistors=None):
-		self.rg_ident = rg_ident
+	def __init__(self, ident, relationship, resistors=None):
+		self.rg_ident = rg_ident # a synthetic ID
+		self.relationship = relationship # either str "series" or "parallel"
 		self.resistors = resistors # this is a list
+		self.resistance = calculate_group_resistance()
+
+	# Groups of resistors can contain groups of resistors
+
+	# I call this method on myself and no one else should call it.
+	def calculate_group_resistance(self):
+		if self.relationship == "series":
+			self.resistance = calc_series_resistance(self.resistors)
+		else:
+			self.resistance = calc_parallel_resistance(self.resistors)
+
 
 
 class Resistor(object):
