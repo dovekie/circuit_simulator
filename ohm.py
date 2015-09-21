@@ -3,6 +3,13 @@
 from math import sqrt, pow
 from random import randint, sample
 
+class Resistor_group(object):
+	"""Group of resistors object"""
+	def __init__(self, ident, resistors=None):
+		self.rg_ident = rg_ident
+		self.resistors = resistors # this is a list
+
+
 class Resistor(object):
 	"""Resistor object class"""
 
