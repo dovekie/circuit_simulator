@@ -5,20 +5,24 @@ from random import randint, sample
 
 class Resistor_group(object):
 	"""Group of resistors object"""
-	def __init__(self, ident, relationship, resistors=None):
+	def __init__(self, rg_ident, relationship, resistors=None):
 		self.rg_ident = rg_ident # a synthetic ID
 		self.relationship = relationship # either str "series" or "parallel"
 		self.resistors = resistors # this is a list
-		self.resistance = calculate_group_resistance()
+		self.resistance = self.calculate_group_resistance()
 
 	# Groups of resistors can contain groups of resistors
 
 	# I call this method on myself and no one else should call it.
 	def calculate_group_resistance(self):
+		self.resistances = []
+		for resistor in self.resistors:
+			self.resistances.append(resistor.resistance)
 		if self.relationship == "series":
-			self.resistance = calc_series_resistance(self.resistors)
+			self.resistance = calc_series_resistance(self.resistances)
 		else:
-			self.resistance = calc_parallel_resistance(self.resistors)
+			self.resistance = calc_parallel_resistance(self.resistances)
+		return self.resistance
 
 
 
@@ -28,25 +32,11 @@ class Resistor(object):
 	def __init__(self, ident, resistance):
 		self.ident = ident
 		self.resistance = resistance
-		self.series_relations = set()
-		self.parallel_relations = set()
+		self.relations = set() # what groups this resistor belongs to
 
-	def add_series_relation(self, r_list):
-		""" pass in a Resistor object r"""
-
-		for r in r_list:
-			if r.ident not in self.parallel_relations:
-				self.series_relations.add(r.ident)
-				r.series_relations.add(self.ident)
-
-	def add_parallel_relation(self, r_list):
-		"""pass in a Resistor object r"""
-
-		for r in r_list:
-			if r.ident not in self.series_relations:
-				self.parallel_relations.add(r.ident)
-				r.parallel_relations.add(self.ident)
-
+	def __repr__(self):
+		"""Provide helpful information when printed!"""
+		return "<Resistor object. ID = %s Resistance = %s>" %(self.ident, self.resistance)
 
 class Circuit(object):
 	"""Circuit object class.
@@ -65,28 +55,25 @@ class Circuit(object):
 
 	"""
 	def __init__(self, current):
-		self.current = current
-		self.number_of_resistors = 0
-		self.resistors = {}
+		self.current = current # Circuit's current does not change.
+		self.number_of_resistors = 0 # this should never actually be 0
+		self.resistors = {} # All resistor groups in this circuit. Why a dictionary? why not a set?
 
-	def add_resistors(self, num = None):
-		if num == None:
+	def add_resistors(self, num = None): # add resistors to the circuit.
+		if num == None: # if the number of resistors is not defined, pick at random.
 			self.number_of_resistors = randint(1, 6)
 		else:
 			self.number_of_resistors = num 
 
-		for resistor_ident in range(self.number_of_resistors):
+		for resistor_ident in range(self.number_of_resistors): # once the resistors exist, assign resistance values
 			self.resistors[resistor_ident] = Resistor(resistor_ident, randint(1, 10))
 
-	def add_series_group(self, r_ids):
-		for resistor_target in r_ids:
-			for resistor_being_added in r_ids:
-				self.resistors[resistor].add_series_relation(self.resistors[resistor_being_added])
+	def group_resistors(resistors):
+		pass
+		# start with each resistor in its own group
+		# while there is more than one group of resistors
+		# put two resistors into either a series or parallel group 
 
-	def add_parallel_group(self, r_ids):
-		for resistor_target in r_ids:
-			for resistor_being_added in r_ids:
-				self.resistors[resistor].add_parallel_relation(self.resistors[resistor_being_added])
 
 	def __repr__(self):
 		"""Provide helpful information when printed!"""
