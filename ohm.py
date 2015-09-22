@@ -1,7 +1,7 @@
 # Ohm's law
 
 from math import sqrt, pow
-from random import randint, sample
+from random import randint, sample, choice
 
 class Resistor_group(object):
 	"""Group of resistors object"""
@@ -57,7 +57,7 @@ class Circuit(object):
 	def __init__(self, current):
 		self.current = current # Circuit's current does not change.
 		self.number_of_resistors = 0 # this should never actually be 0
-		self.resistors = {} # All resistor groups in this circuit. Why a dictionary? why not a set?
+		self.resistors = []
 
 	def add_resistors(self, num = None): # add resistors to the circuit.
 		if num == None: # if the number of resistors is not defined, pick at random.
@@ -66,13 +66,27 @@ class Circuit(object):
 			self.number_of_resistors = num 
 
 		for resistor_ident in range(self.number_of_resistors): # once the resistors exist, assign resistance values
-			self.resistors[resistor_ident] = Resistor(resistor_ident, randint(1, 10))
+			self.resistors.append(Resistor(resistor_ident, randint(1, 10)))
 
-	def group_resistors(resistors):
-		pass
+	def group_resistors(self):
+		states = ["series", "parallel"]
 		# start with each resistor in its own group
 		# while there is more than one group of resistors
 		# put two resistors into either a series or parallel group 
+		# the resistance of the last group should be the resistance of the whole circuit
+		while len(self.resistors) > 1:
+			series_or_parallel = choice(states) # pick either series or parallel
+			print series_or_parallel
+			# pick two items out of the list of resistors
+			# remove them from the list
+			# make them part of a resistor group
+			# add the resistor group back into the list
+			new_group = Resistor_group(len(self.resistors), series_or_parallel, [self.resistors.pop(-1), self.resistors.pop(-1)])
+			print self.resistors
+			self.resistors.append(new_group)
+
+	def get_resistance(self):
+		self.resistance = self.resistors[0].resistance
 
 
 	def __repr__(self):
