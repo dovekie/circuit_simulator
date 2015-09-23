@@ -1,7 +1,7 @@
 # Ohm's law
 
 from math import sqrt, pow
-from random import randint, sample, choice
+from random import randint, sample, choice, randrange
 
 class Resistor_group(object):
 	"""Group of resistors object"""
@@ -24,7 +24,9 @@ class Resistor_group(object):
 			self.resistance = calc_parallel_resistance(self.resistances)
 		return self.resistance
 
-
+	def __repr__(self):
+		"""Provide helpful information when printed!"""
+		return "<Resistor Group object. relationship = %s resistance = %s contains = %s>" %(self.relationship, self.resistance, self.resistors)
 
 class Resistor(object):
 	"""Resistor object class"""
@@ -32,7 +34,7 @@ class Resistor(object):
 	def __init__(self, ident, resistance):
 		self.ident = ident
 		self.resistance = resistance
-		self.relations = set() # what groups this resistor belongs to
+		self.relations = set() # what groups this resistor belongs to - I don't think this is being used.
 
 	def __repr__(self):
 		"""Provide helpful information when printed!"""
@@ -81,12 +83,17 @@ class Circuit(object):
 			# remove them from the list
 			# make them part of a resistor group
 			# add the resistor group back into the list
-			new_group = Resistor_group(len(self.resistors), series_or_parallel, [self.resistors.pop(-1), self.resistors.pop(-1)])
+
+			# for my next trick, I'll pick resistors at random.
+			new_group = Resistor_group(len(self.resistors), series_or_parallel,
+			            [self.resistors.pop(randrange(len(self.resistors))), 
+			            self.resistors.pop(randrange(len(self.resistors)))])
 			print self.resistors
 			self.resistors.append(new_group)
+		self.resistors = self.resistors[0]
 
 	def get_resistance(self):
-		self.resistance = self.resistors[0].resistance
+		self.resistance = self.resistors.resistance
 
 
 	def __repr__(self):
