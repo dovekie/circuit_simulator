@@ -1,10 +1,13 @@
 # Ohm's law
 
 from math import sqrt, pow
-from random import randint, sample, choice, randrange
+from random import randint, choice, randrange
 
 class Resistor_group(object):
-	"""Group of resistors object"""
+	"""
+	A Resistor Group object can contain either Resistor objects
+	or other Resistor Group objects, so long as they have .resistance attributes
+	"""
 	def __init__(self, rg_ident, relationship, resistors=None):
 		self.rg_ident = rg_ident # a synthetic ID
 		self.relationship = relationship # either str "series" or "parallel"
@@ -29,7 +32,13 @@ class Resistor_group(object):
 		return "<Resistor Group object. ID = %s relationship = %s resistance = %s contains = %s>" %(self.rg_ident, self.relationship, self.resistance, self.resistors)
 
 class Resistor(object):
-	"""Resistor object class"""
+	"""
+	Resistor object
+
+	A resistor object has a resistance
+	and a relationship, either series or parallel,
+	to every other resistor in the circuit.
+	"""
 
 	def __init__(self, ident, resistance):
 		self.ident = ident
@@ -41,7 +50,11 @@ class Resistor(object):
 		return "<Resistor object. ID = %s Resistance = %s>" %(self.ident, self.resistance)
 
 class Circuit(object):
-	"""Circuit object class.
+	"""
+	Circuit object class.
+	Circuits have resistors that are grouped into Resistor Group objects.
+	The Circuit object's .current attribute is defined when the circuit is created.
+	All other values are derived.
 
 	>>> simple_circuit = Circuit(10)
 
@@ -71,32 +84,25 @@ class Circuit(object):
 			self.resistors.append(Resistor(resistor_ident, randint(1, 10)))
 
 	def group_resistors(self):
-		states = ["series", "parallel"]
-		# start with each resistor in its own group
-		# while there is more than one group of resistors
-		# put two resistors into either a series or parallel group 
-		# the resistance of the last group should be the resistance of the whole circuit
-		rg_ident = 0
+		"""
+		Pick two items out of the list of resistors at random
+		remove them from the list
+		make them part of a resistor group
+		add the resistor group back into the list
+		"""
+		states = ["series", "parallel"]  # list for a choice() coinflip
+		rg_ident = 0 # constant int for the group's ID
 		while len(self.resistors) > 1:
 			series_or_parallel = choice(states) # pick either series or parallel
-			print series_or_parallel
-			# pick two items out of the list of resistors
-			# remove them from the list
-			# make them part of a resistor group
-			# add the resistor group back into the list
-
-			# for my next trick, I'll pick resistors at random.
 			new_group = Resistor_group(rg_ident, series_or_parallel,
-			            [self.resistors.pop(randrange(len(self.resistors))), 
-			            self.resistors.pop(randrange(len(self.resistors)))])
-			print self.resistors
-			self.resistors.append(new_group)
+			            [self.resistors.pop(randrange(len(self.resistors))), # pop two random elements and
+			            self.resistors.pop(randrange(len(self.resistors)))])  # create a new Resistance Group object
+			self.resistors.append(new_group) # add the new object back to the list
 			rg_ident += 1
-		self.resistors = self.resistors[0]
+		self.resistors = self.resistors[0] # Change a list containing one object into one object for sanity
 
-	def get_resistance(self):
+	def get_resistance(self): #FIXME This should only happen after group_resistors. 
 		self.resistance = self.resistors.resistance
-
 
 	def __repr__(self):
 		"""Provide helpful information when printed!"""
