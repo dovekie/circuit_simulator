@@ -26,7 +26,7 @@ class Resistor_group(object):
 
 	def __repr__(self):
 		"""Provide helpful information when printed!"""
-		return "<Resistor Group object. relationship = %s resistance = %s contains = %s>" %(self.relationship, self.resistance, self.resistors)
+		return "<Resistor Group object. ID = %s relationship = %s resistance = %s contains = %s>" %(self.rg_ident, self.relationship, self.resistance, self.resistors)
 
 class Resistor(object):
 	"""Resistor object class"""
@@ -76,6 +76,7 @@ class Circuit(object):
 		# while there is more than one group of resistors
 		# put two resistors into either a series or parallel group 
 		# the resistance of the last group should be the resistance of the whole circuit
+		rg_ident = 0
 		while len(self.resistors) > 1:
 			series_or_parallel = choice(states) # pick either series or parallel
 			print series_or_parallel
@@ -85,11 +86,12 @@ class Circuit(object):
 			# add the resistor group back into the list
 
 			# for my next trick, I'll pick resistors at random.
-			new_group = Resistor_group(len(self.resistors), series_or_parallel,
+			new_group = Resistor_group(rg_ident, series_or_parallel,
 			            [self.resistors.pop(randrange(len(self.resistors))), 
 			            self.resistors.pop(randrange(len(self.resistors)))])
 			print self.resistors
 			self.resistors.append(new_group)
+			rg_ident += 1
 		self.resistors = self.resistors[0]
 
 	def get_resistance(self):
