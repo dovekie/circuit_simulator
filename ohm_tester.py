@@ -2,6 +2,41 @@ import ohm
 import unittest
 
 class CirkuUnitTestCase(unittest.TestCase):
+
+	def setUp(self):
+		# Setup for resistor tests
+		self.res = ohm.Resistor("a", 8)
+
+		# Setup for resistor group tests
+		self.res_a = ohm.Resistor("a", 1)
+		self.res_b = ohm.Resistor("b", 3)
+		self.res_group = ohm.Resistor_group("ab", "series", [self.res_a, self.res_b])
+
+
+	def test_resistor_init(self):
+		assert(self.res.ident == "a" and self.res.resistance == 8)
+
+	def test_resistor_repr(self):
+		represent = repr(self.res)
+		assert(represent == '<Resistor object. ID = a Resistance = 8>')
+
+
+	def test_resistor_group_init(self):
+		assert(self.res_group.rg_ident == "ab" and self.res_group.relationship == "series")
+
+	def test_resistor_group_calculate_resistance_series(self):
+		assert(self.res_group.resistance == 4)
+
+	def test_resistor_group_calculate_resistance_parallel(self):
+		self.res_group.relationship = "parallel"
+		self.res_group.calculate_group_resistance()
+		assert(self.res_group.resistance == 0.75)
+
+	def test_resistor_group_repr(self):
+		represent_group = repr(self.res_group)
+		assert(represent_group == '<Resistor Group object. ID = ab relationship = series resistance = 4 contains = [<Resistor object. ID = a Resistance = 1>, <Resistor object. ID = b Resistance = 3>]>')
+
+
 	def test_volts_i_times_r(self):
 		i = 10
 		r = 20
