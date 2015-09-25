@@ -12,6 +12,46 @@ class CirkuUnitTestCase(unittest.TestCase):
 		self.res_b = ohm.Resistor("b", 3)
 		self.res_group = ohm.Resistor_group("ab", "series", [self.res_a, self.res_b])
 
+		# Setup for circuit tests
+		self.circ = ohm.Circuit(10)
+		self.circ.add_resistors(2)
+		self.circ.resistors[0].resistance = 2
+		self.circ.resistors[1].resistance = 2
+		self.resistor_list = self.circ.resistors
+
+	def test_circuit_init(self):
+		assert(self.circ.current == 10)
+
+	def test_add_resistors(self):
+		assert(len(self.resistor_list) == 2)
+
+	def test_group_resistors(self):
+		self.circ.group_resistors()
+		group = self.circ.resistors
+		assert(isinstance(group, ohm.Resistor_group))
+
+	def test_get_resistance_series(self):
+		self.circ.group_resistors()
+		self.circ.resistors.relationship = "series"
+		self.circ.resistors.calculate_group_resistance()
+		self.circ.get_resistance()
+		assert(self.circ.resistance == 4)
+
+	def test_get_resistance_parallel(self):
+		self.circ.group_resistors()
+		self.circ.resistors.relationship = "parallel"
+		self.circ.resistors.calculate_group_resistance()
+		self.circ.get_resistance()
+		assert(self.circ.resistance == 1)
+
+	def test_random_resistors(self):
+		self.circ.resistors = []
+		self.circ.add_resistors()
+		self.resistor_list = self.circ.resistors
+		assert(len(self.resistor_list) > 0 and len(self.resistor_list) < 7)
+
+
+
 
 	def test_resistor_init(self):
 		assert(self.res.ident == "a" and self.res.resistance == 8)
