@@ -76,6 +76,8 @@ class Circuit(object):
 		self.add_resistors(self.number_of_resistors)
 		self.group_resistors()
 		self.get_resistance()
+		self.get_voltage()
+		self.get_power()
 
 	def add_resistors(self, num = None): # add resistors to the circuit.
 		if num == None: # if the number of resistors is not defined, pick at random.
@@ -106,6 +108,12 @@ class Circuit(object):
 
 	def get_resistance(self): #FIXME This should only happen after group_resistors. 
 		self.resistance = self.resistors.resistance
+
+	def get_voltage(self):
+		self.voltage = self.current * self.resistance
+
+	def get_power(self):
+		self.power = self.resistance * pow(self.current, 2)
 
 	def __repr__(self):
 		"""Provide helpful information when printed!"""
