@@ -69,10 +69,13 @@ class Circuit(object):
 	{0: 10}
 
 	"""
-	def __init__(self, current):
+	def __init__(self, current, num_resistors = None):
 		self.current = current # Circuit's current does not change.
-		self.number_of_resistors = 0 # this should never actually be 0
 		self.resistors = []
+		self.number_of_resistors = num_resistors
+		self.add_resistors(self.number_of_resistors)
+		self.group_resistors()
+		self.get_resistance()
 
 	def add_resistors(self, num = None): # add resistors to the circuit.
 		if num == None: # if the number of resistors is not defined, pick at random.
