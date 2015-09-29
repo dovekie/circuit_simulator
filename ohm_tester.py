@@ -13,11 +13,11 @@ class CirkuUnitTestCase(unittest.TestCase):
 		self.res_group = ohm.Resistor_group("ab", "series", [self.res_a, self.res_b])
 
 		# Setup for circuit tests
-		self.circ = ohm.Circuit(10)
-		self.circ.add_resistors(2)
-		self.circ.resistors[0].resistance = 2
-		self.circ.resistors[1].resistance = 2
-		self.resistor_list = self.circ.resistors
+		self.circ = ohm.Circuit(10, 2)
+		self.resistance_a = self.circ.resistors.resistors[0].resistance
+		self.resistance_b = self.circ.resistors.resistors[1].resistance
+		self.resistor_list = self.circ.resistors.resistors
+		self.relationship = self.circ.resistors.relationship
 
 	def test_circuit_init(self):
 		assert(self.circ.current == 10)
@@ -26,32 +26,24 @@ class CirkuUnitTestCase(unittest.TestCase):
 		assert(len(self.resistor_list) == 2)
 
 	def test_group_resistors(self):
-		self.circ.group_resistors()
-		group = self.circ.resistors
-		assert(isinstance(group, ohm.Resistor_group))
+		assert(isinstance(self.circ.resistors, ohm.Resistor_group))
 
-	def test_get_resistance_series(self):
-		self.circ.group_resistors()
-		self.circ.resistors.relationship = "series"
-		self.circ.resistors.calculate_group_resistance()
-		self.circ.get_resistance()
-		assert(self.circ.resistance == 4)
-
-	def test_get_resistance_parallel(self):
-		self.circ.group_resistors()
-		self.circ.resistors.relationship = "parallel"
-		self.circ.resistors.calculate_group_resistance()
-		self.circ.get_resistance()
-		assert(self.circ.resistance == 1)
+	def test_get_resistance(self):
+		if self.relationship == "series":
+			print self.relationship
+			assert(self.circ.resistance == self.resistance_a + self.resistance_b)
+		if self.relationship == "parallel":
+			print self.relationship
+			inverse_a = 1/float(self.resistance_a)
+			inverse_b = 1/float(self.resistance_b)
+			inverse_sum = inverse_a + inverse_b
+			assert(self.circ.resistance == 1/inverse_sum)
 
 	def test_random_resistors(self):
 		self.circ.resistors = []
 		self.circ.add_resistors()
 		self.resistor_list = self.circ.resistors
 		assert(len(self.resistor_list) > 0 and len(self.resistor_list) < 7)
-
-
-
 
 	def test_resistor_init(self):
 		assert(self.res.ident == "a" and self.res.resistance == 8)
