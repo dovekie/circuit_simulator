@@ -2,3 +2,4 @@
 *.sh
 .coverage
 htmlcov/
+misc/

@@ -1,7 +1,8 @@
 # Ohm's law
 
-from math import sqrt, pow
+from math import sqrt
 from random import randint, choice, randrange
+from decimal import Decimal, getcontext
 
 class Resistor_group(object):
 	"""
@@ -42,8 +43,7 @@ class Resistor(object):
 
 	def __init__(self, ident, resistance):
 		self.ident = ident
-		self.resistance = resistance
-		self.relations = set() # what groups this resistor belongs to - I don't think this is being used.
+		self.resistance = Decimal(resistance)
 
 	def __repr__(self):
 		"""Provide helpful information when printed!"""
@@ -56,28 +56,21 @@ class Circuit(object):
 	The Circuit object's .current attribute is defined when the circuit is created.
 	All other values are derived.
 
-	>>> simple_circuit = Circuit(10)
+	>>> simple_circuit = Circuit(10, 2)
 
 	>>> simple_circuit.current
-	10
-
-	>>> simple_circuit.resistors
-	{}
-	
-	>>> simple_circuit.resistors[0] = 10
-	>>> simple_circuit.resistors
-	{0: 10}
+	Decimal('10')
 
 	"""
 	def __init__(self, current, num_resistors = None):
-		self.current = current # Circuit's current does not change.
+		self.current = Decimal(current) # Circuit's current does not change.
 		self.resistors = []
 		self.number_of_resistors = num_resistors
 		self.add_resistors(self.number_of_resistors)
 		self.group_resistors()
 		self.get_resistance()
 		self.get_voltage()
-		self.get_power()
+		#self.get_power()
 
 	def add_resistors(self, num = None): # add resistors to the circuit.
 		if num == None: # if the number of resistors is not defined, pick at random.
@@ -113,7 +106,7 @@ class Circuit(object):
 		self.voltage = self.current * self.resistance
 
 	def get_power(self):
-		self.power = self.resistance * pow(self.current, 2)
+		self.power = self.resistance * (self.current**Decimal(2))
 
 	def __repr__(self):
 		"""Provide helpful information when printed!"""
@@ -137,9 +130,9 @@ def calc_resistance(e=None, i=None, p=None):
 		if i != None:
 			resistance = e/i
 		else:
-			resistance = pow(e, 2)/p
+			resistance = (e**2)/p
 	else:
-		resistance = p/pow(i, 2)
+		resistance = p/(i**2)
 	return resistance
 
 def calc_current(e=None, r=None, p=None):
@@ -155,9 +148,9 @@ def calc_current(e=None, r=None, p=None):
 def calc_power(e=None, r=None, i=None):
 	if r != None:
 		if e != None:
-			power = pow(e, 2)/r
+			power = (e**2)/r
 		else:
-			power = r * pow(i, 2)
+			power = r * (i**2)
 	else:
 		power = e * i
 	return power
@@ -170,7 +163,7 @@ def calc_series_resistance(resistors = []):
 def calc_parallel_resistance(resistors = []):
 	total_resistance = 0
 	for resistor in resistors:
-		total_resistance = total_resistance + 1/float(resistor)
+		total_resistance = total_resistance + 1/Decimal(resistor)
 
 	total_resistance = 1/total_resistance #FIXME to cut off decimals in a controlled way!
 

@@ -1,5 +1,6 @@
 import ohm
 import unittest
+from decimal import Decimal
 
 class CirkuUnitTestCase(unittest.TestCase):
 
@@ -34,8 +35,8 @@ class CirkuUnitTestCase(unittest.TestCase):
 			assert(self.circ.resistance == self.resistance_a + self.resistance_b)
 		if self.relationship == "parallel":
 			print self.relationship
-			inverse_a = 1/float(self.resistance_a)
-			inverse_b = 1/float(self.resistance_b)
+			inverse_a = 1/self.resistance_a
+			inverse_b = 1/self.resistance_b
 			inverse_sum = inverse_a + inverse_b
 			assert(self.circ.resistance == 1/inverse_sum)
 
@@ -62,7 +63,8 @@ class CirkuUnitTestCase(unittest.TestCase):
 	def test_resistor_group_calculate_resistance_parallel(self):
 		self.res_group.relationship = "parallel"
 		self.res_group.calculate_group_resistance()
-		assert(self.res_group.resistance == 0.75)
+		correct_result = 1/(( 1/Decimal(1) ) + ( 1/Decimal(3) ))
+		assert(self.res_group.resistance == correct_result)
 
 	def test_resistor_group_repr(self):
 		represent_group = repr(self.res_group)
@@ -148,7 +150,7 @@ class CirkuUnitTestCase(unittest.TestCase):
 
 	def test_parallel_resistance(self):
 		resistors = [2, 10, 1, 5]
-		correct_result = (1/1.8) # aka .5 repeating. FIXME to cut off decimals in a controlled way!
+		correct_result = 1/(( 1/Decimal(2) ) + ( 1/Decimal(10) ) + ( 1/Decimal(1) ) + ( 1/Decimal(5) )) # aka .5 repeating. FIXME to cut off decimals in a controlled way!
 		assert(ohm.calc_parallel_resistance(resistors) == correct_result)
 
 if __name__ == "__main__":
