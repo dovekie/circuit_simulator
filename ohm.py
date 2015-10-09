@@ -70,7 +70,7 @@ class Circuit(object):
 		self.group_resistors()
 		self.get_resistance()
 		self.get_voltage()
-		#self.get_power()
+		self.get_power()
 
 	def add_resistors(self, num = None): # add resistors to the circuit.
 		if num == None: # if the number of resistors is not defined, pick at random.
