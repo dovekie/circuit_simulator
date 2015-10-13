@@ -15,10 +15,12 @@ class CirkuUnitTestCase(unittest.TestCase):
 
 		# Setup for circuit tests
 		self.circ = ohm.Circuit(10, 2)
-		self.resistance_a = self.circ.resistors.resistors[0].resistance
-		self.resistance_b = self.circ.resistors.resistors[1].resistance
-		self.resistor_list = self.circ.resistors.resistors
-		self.relationship = self.circ.resistors.relationship
+		self.circ.group_all_resistors()
+		self.circ.get_resistance()
+		self.resistance_a = self.circ.resistors[0].resistors[0].resistance
+		self.resistance_b = self.circ.resistors[0].resistors[1].resistance
+		self.resistor_list = self.circ.resistors[0].resistors
+		self.relationship = self.circ.resistors[0].relationship
 
 	def test_circuit_init(self):
 		assert(self.circ.current == 10)
@@ -26,8 +28,8 @@ class CirkuUnitTestCase(unittest.TestCase):
 	def test_add_resistors(self):
 		assert(len(self.resistor_list) == 2)
 
-	def test_group_resistors(self):
-		assert(isinstance(self.circ.resistors, ohm.Resistor_group))
+	def test_group_all_resistors(self):
+		assert(isinstance(self.circ.resistors[0], ohm.Resistor_group))
 
 	def test_get_resistance(self):
 		if self.relationship == "series":
@@ -152,6 +154,17 @@ class CirkuUnitTestCase(unittest.TestCase):
 		resistors = [2, 10, 1, 5]
 		correct_result = 1/(( 1/Decimal(2) ) + ( 1/Decimal(10) ) + ( 1/Decimal(1) ) + ( 1/Decimal(5) )) # aka .5 repeating. FIXME to cut off decimals in a controlled way!
 		assert(ohm.calc_parallel_resistance(resistors) == correct_result)
+
+	def test_transitive_resistance(self):
+		circ = ohm.Circuit(10, 3)
+		res1 = circ.resistors[0].resistance
+		res2 = circ.resistors[1].resistance
+		res3 = circ.resistors[2].resistance
+		circ.group_resistor_pair(0, [0, 1], "parallel")
+		circ.group_resistor_pair(1, [0, 1], "parallel")
+		circ.get_resistance()
+		correct_result = 1/((1/res1) + (1/res2) + (1/res3))
+		assert(circ.resistance == correct_result)
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,7 +1,7 @@
 # Ohm's law
 
 from math import sqrt
-from random import randint, choice, randrange
+from random import randint, choice, sample
 from decimal import Decimal, getcontext
 
 class Resistor_group(object):
@@ -67,10 +67,10 @@ class Circuit(object):
 		self.resistors = []
 		self.number_of_resistors = num_resistors
 		self.add_resistors(self.number_of_resistors)
-		self.group_resistors()
-		self.get_resistance()
-		self.get_voltage()
-		self.get_power()
+		# self.group_resistors()
+		# self.get_resistance()
+		# self.get_voltage()
+		# self.get_power()
 
 	def add_resistors(self, num = None): # add resistors to the circuit.
 		if num == None: # if the number of resistors is not defined, pick at random.
@@ -81,7 +81,23 @@ class Circuit(object):
 		for resistor_ident in range(self.number_of_resistors): # once the resistors exist, assign resistance values
 			self.resistors.append(Resistor(resistor_ident, randint(1, 10)))
 
-	def group_resistors(self):
+	def group_resistor_pair(self, ident, pair, relationship):
+		"""
+		Groups two specific resistors with a defined relationship.
+		Takes two integers (indices) and a string ("series" or "parallel")
+
+		returns nothing, but appends a new resistors group to the res_list
+		"""
+		res1 = self.resistors[pair[0]]
+		res2 = self.resistors[pair[1]]
+		self.resistors.remove(res1)
+		self.resistors.remove(res2)
+
+		new_group = Resistor_group(ident, relationship, [res1, res2])
+
+		self.resistors.append(new_group)
+
+	def group_all_resistors(self):
 		"""
 		Pick two items out of the list of resistors at random
 		remove them from the list
@@ -89,18 +105,15 @@ class Circuit(object):
 		add the resistor group back into the list
 		"""
 		states = ["series", "parallel"]  # list for a choice() coinflip
-		rg_ident = 0 # constant int for the group's ID
+		rg_ident = 0 # constant int seed for the group's ID
 		while len(self.resistors) > 1:
 			series_or_parallel = choice(states) # pick either series or parallel
-			new_group = Resistor_group(rg_ident, series_or_parallel,
-			            [self.resistors.pop(randrange(len(self.resistors))), # pop two random elements and
-			            self.resistors.pop(randrange(len(self.resistors)))])  # create a new Resistance Group object
-			self.resistors.append(new_group) # add the new object back to the list
+			random_resistors = sample(range(len(self.resistors)), 2)
+			self.group_resistor_pair(rg_ident, random_resistors, series_or_parallel)
 			rg_ident += 1
-		self.resistors = self.resistors[0] # Change a list containing one object into one object for sanity
 
 	def get_resistance(self): #FIXME This should only happen after group_resistors. 
-		self.resistance = self.resistors.resistance
+		self.resistance = self.resistors[0].resistance
 
 	def get_voltage(self):
 		self.voltage = self.current * self.resistance
