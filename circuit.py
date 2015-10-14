@@ -45,6 +45,7 @@ def Make_Circuits():
 	circ7.group_resistor_pair(0, [0, 1], "parallel")
 	circ7.group_resistor_pair(1, [0, 1], "parallel")
 
+
 	circuits = []
 
 	circuits.append(circ0)
@@ -54,7 +55,6 @@ def Make_Circuits():
 	circuits.append(circ4)
 	circuits.append(circ5)
 	circuits.append(circ6)
-	circuits.append(circ7)
 
 	return circuits
 

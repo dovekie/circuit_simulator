@@ -62,15 +62,16 @@ class Circuit(object):
 	Decimal('10')
 
 	"""
-	def __init__(self, current, num_resistors = None):
+	def __init__(self, current, num_resistors = None, generate_all = False):
 		self.current = Decimal(current) # Circuit's current does not change.
 		self.resistors = []
 		self.number_of_resistors = num_resistors
 		self.add_resistors(self.number_of_resistors)
-		# self.group_resistors()
-		# self.get_resistance()
-		# self.get_voltage()
-		# self.get_power()
+		if generate_all:
+			self.group_all_resistors()
+			self.get_resistance()
+			self.get_voltage()
+			self.get_power()
 
 	def add_resistors(self, num = None): # add resistors to the circuit.
 		if num == None: # if the number of resistors is not defined, pick at random.
@@ -80,6 +81,7 @@ class Circuit(object):
 
 		for resistor_ident in range(self.number_of_resistors): # once the resistors exist, assign resistance values
 			self.resistors.append(Resistor(resistor_ident, randint(1, 10)))
+		return "%s resistors created"
 
 	def group_resistor_pair(self, ident, pair, relationship):
 		"""

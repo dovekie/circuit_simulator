@@ -22,8 +22,20 @@ class CirkuUnitTestCase(unittest.TestCase):
 		self.resistor_list = self.circ.resistors[0].resistors
 		self.relationship = self.circ.resistors[0].relationship
 
-	def test_circuit_init(self):
-		assert(self.circ.current == 10)
+	def test_circuit_init_no_build_current(self):
+		assert(self.circ.current == 10)	
+
+	def test_circuit_init_with_build_resistor(self):
+		self.circ_build = ohm.Circuit(10, 2, True)
+		assert(len(self.circ_build.resistors) == 1)
+
+	def test_circuit_init_with_build_power(self):
+		self.circ_build = ohm.Circuit(10, 2, True)
+		assert(hasattr(self.circ_build, "power"))
+
+	def test_circuit_init_with_build_voltage(self):
+		self.circ_build = ohm.Circuit(10, 2, True)
+		assert(hasattr(self.circ_build, "voltage"))
 
 	def test_add_resistors(self):
 		assert(len(self.resistor_list) == 2)
